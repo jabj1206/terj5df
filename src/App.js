@@ -1,56 +1,53 @@
-import React, { Component } from "react";
 
-let guests = [];
-let initialState = {firstName: "", lastName: ""}
+import React, { Component } from 'react';
 
 class App extends Component {
-  state = initialState
-
-  _handleSubmit = e => {
-    e.preventDefault();
-    guests = [...guests, this.state];
-    this.setState(initialState);
-  };
-
-  _handleChange = e => {
-    const name = e.target.name === "first-name" ? "firstName" : "lastName";
+  constructor() {
+    super()
+    this.state = {
+      guests: [],
+      newGuestName: "",
+      newGuestLast: "",
+    }
+  }
+  updateGuestName (event) {
     this.setState({
-      [name]: e.target.value
-    });
-  };
-
+      newGuestName: event.target.value
+    })
+  }  
+  updateGuestLast (event) {
+    this.setState({
+      newGuestLast: event.target.value
+    })
+  }
+  handleSubmit = (e) =>{
+    var taskId = this.state.guests.length + 1
+    this.setState({
+      guests: this.state.guests.concat({id: taskId, name: this.state.newGuestName, last: this.state.newGuestLast}),
+      newGuestName: "",
+      newGuestLast: "",
+    })
+    e.preventDefault();
+  }
+  
   render() {
     return (
       <div className="container">
         <div className="row">
           <div className="col-sm-6 col-sm-offset-3">
-            <form onSubmit={this._handleSubmit}>
+            <form onSubmit={this.handleSubmit}>
               <div className="form-group">
                 <label htmlFor="first-name">Nombre</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  onChange={this._handleChange}
-                  name="first-name"
-                  value={this.state.firstName}
-                />
+                <input type="text" value={this.state.newGuestName} onChange={this.updateGuestName.bind(this)}  className="form-control" name="first-name" />
               </div>
 
               <div className="form-group">
                 <label htmlFor="last-name">Apellido</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="last-name"
-                  onChange={this._handleChange}
-                  value={this.state.lastName}
-                />
+                <input type="text" value={this.state.newGuestLast} onChange={this.updateGuestLast.bind(this)} className="form-control" name="last-name" />
               </div>
 
               <div className="action">
-                <button type="submit" className="btn btn-primary">
-                  Agregar Invitado
-                </button>
+                <button type="submit" className="btn btn-primary">Agregar Invitado</button>
               </div>
             </form>
 
@@ -62,19 +59,15 @@ class App extends Component {
                 </tr>
               </thead>
               <tbody>
-                {guests.map((guest, i) => (
-                  <tr key={i}>
-                    <td>{guest["firstName"]}</td>
-                    <td>{guest["lastName"]}</td>
-                  </tr>
-                ))}
+                {this.state.guests.map((guest, index) => <tr> <td>{guest.name}</td> <td>{guest.last}</td></tr>)}
               </tbody>
             </table>
+
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
